@@ -1,0 +1,32 @@
+/* Hide pages by default */
+.page {
+    display: none;
+}
+
+/* Show the page only when it has the 'active' class */
+.page.active {
+    display: block;
+}
+
+/* Hide logged-in elements when the body has 'not-authenticated' class */
+body.not-authenticated .role-logged-in {
+    display: none;
+}
+
+/* Hide logged-out elements when the body has 'authenticated' class */
+body.authenticated .role-logged-out {
+    display: none;
+}
+
+.page {
+    display: none; /* Hide all pages by default */
+}
+
+.page.active {
+    display: block; /* Show only the active page */
+}
+
+/* Style to match your dark header from the images */
+.navbar-dark {
+    background-color: #212529 !important;
+}
