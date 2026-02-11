@@ -600,61 +600,102 @@
     </section>
 
     <section id="requests-page" class="page">
+
         <div class="container mt-4">
+
             <div class="d-flex justify-content-between align-items-center mb-3">
+
                 <h2 class="fw-bold">My Requests</h2>
+
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newRequestModal">+ New Request</button>
+
             </div>
 
             <div id="emptyRequests" class="text-center py-5">
+
                 <p class="text-muted">You have no requests yet.</p>
+
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newRequestModal">Create One</button>
+
             </div>
 
             <div id="requestTableContainer" class="table-responsive d-none">
+
                 <table class="table table-bordered align-middle">
+
                     <thead class="table-light">
+
                         <tr>
                             <th>Type</th>
                             <th>Items Count</th>
                             <th>Status</th>
                             <th>Actions</th>
+
                         </tr>
+
                     </thead>
+
                     <tbody id="requestTableBody"></tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </section>
 
     <div class="modal fade" id="newRequestModal" tabindex="-1" aria-hidden="true">
+
         <div class="modal-dialog">
+
             <div class="modal-content">
+
                 <div class="modal-header">
+
                     <h5 class="modal-title fw-bold">New Request</h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
                 </div>
+
                 <div class="modal-body">
+
                     <form id="requestForm">
+
                         <div class="mb-3">
+
                             <label class="form-label small fw-bold">Type</label>
+
                             <input type="text" class="form-control" id="reqType" value="Equipment" required>
+
                         </div>
                         
                         <label class="form-label small fw-bold">Items</label>
+
                         <div id="itemsContainer">
+
                             <div class="input-group mb-2 item-row">
+
                                 <input type="text" class="form-control" placeholder="Item name" required>
+
                                 <input type="number" class="form-control" value="1" style="max-width: 70px;">
+
                                 <button class="btn btn-outline-secondary add-item-btn" type="button">+</button>
+
                             </div>
+
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-3 w-100">Submit Request</button>
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+        
     </div>
 
 </main>
