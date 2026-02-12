@@ -1,32 +1,57 @@
-/* Hide pages by default */
+/* ========================================
+   PAGE ROUTING VISIBILITY
+======================================== */
+
+/* Hide all pages by default */
 .page {
     display: none;
 }
 
-/* Show the page only when it has the 'active' class */
+/* Show active page */
 .page.active {
     display: block;
 }
 
-/* Hide logged-in elements when the body has 'not-authenticated' class */
+
+/* ========================================
+   AUTHENTICATION VISIBILITY
+======================================== */
+
+/* Hide logged-in elements when logged out */
 body.not-authenticated .role-logged-in {
     display: none;
 }
 
-/* Hide logged-out elements when the body has 'authenticated' class */
+/* Hide logged-out elements when logged in */
 body.authenticated .role-logged-out {
     display: none;
 }
 
-.page {
-    display: none; /* Hide all pages by default */
+/* Show logged-in elements when authenticated */
+body.authenticated .role-logged-in {
+    display: block;
 }
 
-.page.active {
-    display: block; /* Show only the active page */
+
+/* ========================================
+   ROLE-BASED VISIBILITY
+======================================== */
+
+/* Hide admin items by default */
+.role-admin {
+    display: none;
 }
 
-/* Style to match your dark header from the images */
+/* Show admin items only when user is admin */
+body.is-admin .role-admin {
+    display: block;
+}
+
+
+/* ========================================
+   NAVBAR STYLE
+======================================== */
+
 .navbar-dark {
-    background-color: #212529 !important;
+    background-color: #212529;
 }
