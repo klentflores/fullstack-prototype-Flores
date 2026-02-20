@@ -1,57 +1,13 @@
-/* ========================================
-   PAGE ROUTING VISIBILITY
-======================================== */
+.page { display: none; }
 
-/* Hide all pages by default */
-.page {
-    display: none;
-}
+ .page.active { display: block; }
 
-/* Show active page */
-.page.active {
-    display: block;
-}
+ body.not-authenticated .role-logged-in { display: none; }
 
+ body.authenticated .role-logged-out { display: none; }
 
-/* ========================================
-   AUTHENTICATION VISIBILITY
-======================================== */
+ .role-admin { display: none; }
 
-/* Hide logged-in elements when logged out */
-body.not-authenticated .role-logged-in {
-    display: none;
-}
+ body.is-admin .role-admin { display: block; }
 
-/* Hide logged-out elements when logged in */
-body.authenticated .role-logged-out {
-    display: none;
-}
-
-/* Show logged-in elements when authenticated */
-body.authenticated .role-logged-in {
-    display: block;
-}
-
-
-/* ========================================
-   ROLE-BASED VISIBILITY
-======================================== */
-
-/* Hide admin items by default */
-.role-admin {
-    display: none;
-}
-
-/* Show admin items only when user is admin */
-body.is-admin .role-admin {
-    display: block;
-}
-
-
-/* ========================================
-   NAVBAR STYLE
-======================================== */
-
-.navbar-dark {
-    background-color: #212529;
-}
+.navbar-dark { background-color: #212529; }
