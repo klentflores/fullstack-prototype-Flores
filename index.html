@@ -324,8 +324,8 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-primary" onclick="saveAccount()">Save</button>
-                            <button type="button" class="btn btn-secondary" onclick="resetAccountForm()" disabled>Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="window.saveAccount()">Save</button>
+                            <button type="button" class="btn btn-secondary" id="accCancelBtn" onclick="window.resetAccountForm(); alert('Cancel complete.');" disabled>Cancel</button>
                         </div>
                     </form>
 
@@ -392,12 +392,16 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="fw-bold">My Requests</h2>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newRequestModal">+ New Request</button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newRequestModal">
+                    + New Request
+                </button>
             </div>
 
             <div id="emptyRequests" class="text-center py-5">
                 <p class="text-muted">You have no requests yet.</p>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newRequestModal">Create One</button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newRequestModal">
+                    Create One
+                </button>
             </div>
 
             <div id="requestTableContainer" class="table-responsive d-none">
@@ -405,7 +409,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>Type</th>
-                            <th>Items Count</th>
+                            <th>Items</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -423,14 +427,19 @@
 
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold">New Request</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
                     <form id="requestForm">
+
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Type</label>
-                            <input type="text" class="form-control" id="reqType" value="Equipment" required>
+                            <label class="form-label small fw-bold">Request Type</label>
+                            <select class="form-control" id="reqType" required>
+                                <option value="Equipment">Equipment</option>
+                                <option value="Leave">Leave</option>
+                                <option value="Resources">Resources</option>
+                            </select>
                         </div>
 
                         <label class="form-label small fw-bold">Items</label>
@@ -444,8 +453,36 @@
 
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3 w-100">Submit Request</button>
+
+                        <button type="submit" class="btn btn-primary mt-3 w-100">
+                            Submit Request
+                        </button>
+
                     </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewRequestModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Request Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p><strong>Type:</strong> <span id="viewType"></span></p>
+                    <p><strong>Date:</strong> <span id="viewDate"></span></p>
+                    <p><strong>Status:</strong> <span id="viewStatus"></span></p>
+
+                    <hr>
+
+                    <h6 class="fw-bold">Items</h6>
+                    <ul id="viewItems" class="list-group"></ul>
                 </div>
 
             </div>

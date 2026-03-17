@@ -167,7 +167,6 @@ registerForm.addEventListener('submit', (e) => {
     registerForm.reset();
     window.location.hash = '#/login';
 });
-//---------------------------------------------------------------------------------------------------------------//
 
 //MY PROFILE PAGE
 function renderProfile() {
@@ -373,19 +372,19 @@ window.deleteAccount = function(index) {
 };
 
 window.saveAccount = function() {
-    const accData = {
-        firstName: document.getElementById('accFirstName').value.trim(),
-        lastName: document.getElementById('accLastName').value.trim(),
-        email: document.getElementById('accEmail').value.trim(),
-        password: document.getElementById("accPassword").value.trim(),
-        role: document.getElementById('accRole').value,
-        verified: document.getElementById('accVerified').checked
-    };
+    const firstName = document.getElementById('accFirstName').value.trim();
+    const lastName = document.getElementById('accLastName').value.trim();
+    const email = document.getElementById('accEmail').value.trim();
+    const password = document.getElementById('accPass').value.trim();
+    const role = document.getElementById('accRole').value;
+    const verified = document.getElementById('accVerified').checked;
 
-    if (!accData.firstName || !accData.email) {
+    if (!firstName || !email) {
         alert("Please fill in the Name and Email.");
         return;
     }
+
+    const accData = { firstName, lastName, email, password, role, verified };
 
     if (editingAccountIndex !== null) {
         const oldPass = window.db.accounts[editingAccountIndex].password;
@@ -393,25 +392,25 @@ window.saveAccount = function() {
             accData.password = oldPass;
         }
         window.db.accounts[editingAccountIndex] = accData;
-        
+        alert("Account updated successfully!");
     } else {
         window.db.accounts.push(accData);
+        alert("Account created successfully!");
     }
 
     saveToStorage();
     renderAccounts();
     
-    const form = document.getElementById('accountForm');
-    form.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
-    alert("Account updated successfully!");
+    window.resetAccountForm(); 
 };
 
 window.resetAccountForm = function() {
     const form = document.getElementById('accountForm');
-    form.reset();
-    
-    form.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
-    alert("Cancel complete.");
+    if (form) {
+        form.reset();
+        editingAccountIndex = null;
+        form.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
+    }
 };
 
 //DEPARTMENT PAGE
@@ -510,44 +509,155 @@ window.cancelDept = function() {
 };
 
 
+//My Requests
+function renderRequests() {
+    const tableBody = document.getElementById("requestTableBody");
+    const emptyDiv = document.getElementById("emptyRequests");
+    const container = document.getElementById("requestTableContainer");
 
+    if (!tableBody) return;
 
+    const myRequests = window.db.requests.filter(
+        r => r.employeeEmail === currentUser.email
+    );
 
+    if (myRequests.length === 0) {
+        emptyDiv.classList.remove('d-none');
+        container.classList.add('d-none');
+        return;
+    }
 
+    emptyDiv.classList.add('d-none');
+    container.classList.remove('d-none');
 
+    tableBody.innerHTML = myRequests.map(req => {
 
+        let badgeClass =
+            req.status === "Approved" ? "bg-success" :
+            req.status === "Rejected" ? "bg-danger" :
+            "bg-warning text-dark";
 
+        return `
+            <tr>
+                <td>${req.type}</td>
 
+                <td>
+                    ${req.items.map(i => `${i.name} (${i.qty})`).slice(0,2).join(', ')}
+                    ${req.items.length > 2 ? '...' : ''}
+                </td>
 
+                <td>
+                    <span class="badge ${badgeClass}">
+                        ${req.status}
+                    </span>
+                </td>
 
+                <td>
+                    <button class="btn btn-sm btn-outline-info"
+                        onclick="viewRequestDetails(${req.id})">
+                        View
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
 
+function viewRequestDetails(id) {
+    const req = window.db.requests.find(r => r.id === id);
+    if (!req) return;
 
+    document.getElementById("viewType").textContent = req.type;
+    document.getElementById("viewDate").textContent = req.date;
+    document.getElementById("viewStatus").textContent = req.status;
 
+    const itemsList = document.getElementById("viewItems");
 
+    itemsList.innerHTML = req.items.map(item => `
+        <li class="list-group-item d-flex justify-content-between">
+            ${item.name}
+            <span class="badge bg-primary">${item.qty}</span>
+        </li>
+    `).join('');
 
+    new bootstrap.Modal(
+        document.getElementById('viewRequestModal')
+    ).show();
+}
 
+document.addEventListener('click', (e) => {
 
+    if (e.target.classList.contains('add-item-btn')) {
+        const container = document.getElementById('itemsContainer');
 
+        const row = document.createElement('div');
+        row.className = 'input-group mb-2 item-row';
 
+        row.innerHTML = `
+            <input type="text" class="form-control" placeholder="Item name" required>
+            <input type="number" class="form-control" value="1" min="1" style="max-width: 70px;">
+            <button class="btn btn-outline-danger remove-item-btn" type="button">×</button>
+        `;
 
+        container.appendChild(row);
+    }
 
+    if (e.target.classList.contains('remove-item-btn')) {
+        e.target.closest('.item-row').remove();
+    }
+});
 
+document.getElementById('requestForm').onsubmit = function(e) {
+    e.preventDefault();
 
+    const items = [];
 
+    document.querySelectorAll('.item-row').forEach(row => {
+        const name = row.children[0].value.trim();
+        const qty = parseInt(row.children[1].value);
 
+        if (name) {
+            items.push({
+                name: name,
+                qty: qty || 1
+            });
+        }
+    });
 
+    if (items.length === 0) {
+        alert("Please add at least one item.");
+        return;
+    }
 
+    const newReq = {
+        id: Date.now(),
+        type: document.getElementById('reqType').value,
+        items: items,
+        status: "Pending",
+        date: new Date().toLocaleDateString(),
+        employeeEmail: currentUser.email
+    };
 
+    window.db.requests.push(newReq);
+    saveToStorage();
+    renderRequests();
 
+    const modalEl = document.getElementById('newRequestModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
 
+    this.reset();
 
+    document.getElementById('itemsContainer').innerHTML = `
+        <div class="input-group mb-2 item-row">
+            <input type="text" class="form-control" placeholder="Item name" required>
+            <input type="number" class="form-control" value="1" style="max-width: 70px;">
+            <button class="btn btn-outline-secondary add-item-btn" type="button">+</button>
+        </div>
+    `;
 
-
-
-
-
-
-
+    alert("Request Submitted!");
+};
 
 //INIT
 window.addEventListener('hashchange', handleRoute);
@@ -558,6 +668,11 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
 window.addEventListener('load', () => {
     loadFromStorage();
+    
+    if (!window.db.requests) {
+        window.db.requests = [];
+    }
+
     handleRoute();
    
     const token = localStorage.getItem('auth_token');
@@ -569,6 +684,5 @@ window.addEventListener('load', () => {
     renderEmployeesTable();
     renderAccounts();
     renderDepartments();
+    renderRequests();
 });
-
-
